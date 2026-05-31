@@ -360,3 +360,846 @@ FROM Product p
 INNER JOIN OrderItem oi
 ON p.ProductId = oi.ProductId
 GROUP BY p.ProductId, p.ProductName;
+
+-- DAY 2 ASSIGNMENT
+-- SUBQUERIES
+
+SELECT * FROM CUSTOMER
+SELECT * FROM SELLER
+SELECT * FROM PRODUCT
+SELECT * FROM ORDERS
+SELECT * FROM ORDERITEM
+
+
+SELECT * FROM PRODUCT WHERE PRICE > (SELECT AVG(PRICE) FROM PRODUCT)
+
+SELECT * FROM PRODUCT WHERE STOCKQUANTITY < (SELECT AVG(STOCKQUANTITY) FROM PRODUCT)
+
+SELECT * FROM CUSTOMER  WHERE CUSTOMERID IN(SELECT CUSTOMERID FROM ORDERS )
+
+SELECT * FROM CUSTOMER  WHERE CUSTOMERID NOT IN(SELECT CUSTOMERID FROM ORDERS )
+
+SELECT * FROM PRODUCT WHERE PRODUCTID IN (SELECT PRODUCTID FROM ORDERITEM)
+
+SELECT * FROM PRODUCT WHERE PRODUCTID NOT IN (SELECT PRODUCTID FROM ORDERITEM)
+
+SELECT * FROM SELLER WHERE SELLERID IN (SELECT SELLERID FROM PRODUCT)
+
+SELECT * FROM SELLER WHERE SELLERID NOT IN (SELECT SELLERID FROM PRODUCT)
+
+SELECT * FROM ORDERS WHERE CUSTOMERID IN(SELECT CUSTOMERID FROM CUSTOMER WHERE CITY='CHENNAI')
+
+SELECT * FROM PRODUCT WHERE SELLERID IN(SELECT SELLERID FROM SELLER WHERE CITY='BANGALORE')
+
+SELECT * FROM CUSTOMER WHERE CUSTOMERID IN (SELECT CUSTOMERID FROM ORDERITEM)
+
+SELECT * FROM CUSTOMER WHERE CUSTOMERID NOT IN (SELECT CUSTOMERID FROM ORDERITEM)
+
+SELECT * FROM PRODUCT WHERE PRODUCTID IN(SELECT PRODUCTID FROM ORDERITEM)
+
+SELECT * FROM PRODUCT WHERE PRODUCTID NOT IN(SELECT PRODUCTID FROM ORDERITEM)
+
+SELECT * FROM SELLER WHERE SELLERID IN (SELECT SELLERID FROM PRODUCT)
+
+SELECT * FROM SELLER WHERE SELLERID NOT IN (SELECT SELLERID FROM PRODUCT)
+
+SELECT * FROM ORDERS WHERE ORDERID IN(SELECT ORDERID FROM ORDERITEM WHERE PRODUCTID IN(SELECT PRODUCTID FROM PRODUCT WHERE CATEGORY='MOBILE'))
+
+SELECT * FROM ORDERS WHERE ORDERID NOT IN(SELECT ORDERID FROM ORDERITEM WHERE PRODUCTID IN(SELECT PRODUCTID FROM PRODUCT WHERE CATEGORY='LAPTOP'))
+
+SELECT * FROM PRODUCT WHERE PRICE=(SELECT MAX(PRICE) FROM PRODUCT)
+
+SELECT * FROM PRODUCT WHERE PRICE=(SELECT MIN(PRICE) FROM PRODUCT)
+
+SELECT * FROM PRODUCT WHERE PRICE>(SELECT AVG(PRICE) FROM PRODUCT)
+
+SELECT * FROM PRODUCT WHERE PRICE<(SELECT AVG(PRICE) FROM PRODUCT)
+
+SELECT 
+    c.CustomerId,
+    c.CustomerName,
+    SUM(oi.Quantity * oi.UnitPrice) AS TotalOrderAmount
+FROM Customer c
+JOIN Orders o ON c.CustomerId = o.CustomerId
+JOIN OrderItem oi ON o.OrderId = oi.OrderId
+GROUP BY c.CustomerId, c.CustomerName
+HAVING SUM(oi.Quantity * oi.UnitPrice) >
+(
+    SELECT AVG(OrderTotal)
+    FROM
+    (
+        SELECT 
+            oi.OrderId,
+            SUM(oi.Quantity * oi.UnitPrice) AS OrderTotal
+        FROM OrderItem oi
+        GROUP BY oi.OrderId
+    ) AS OrderAmounts
+)
+
+SELECT
+    s.SellerId,
+    s.SellerName,
+    SUM(oi.Quantity * oi.UnitPrice) AS TotalSalesAmount
+FROM Seller s
+INNER JOIN Product p
+    ON s.SellerId = p.SellerId
+INNER JOIN OrderItem oi
+    ON p.ProductId = oi.ProductId
+GROUP BY
+    s.SellerId,
+    s.SellerName
+HAVING SUM(oi.Quantity * oi.UnitPrice) > 50000;
+
+SELECT
+    p.ProductId,
+    p.ProductName,
+    SUM(oi.Quantity) AS TotalSoldQuantity
+FROM Product p
+JOIN OrderItem oi ON p.ProductId = oi.ProductId
+GROUP BY p.ProductId, p.ProductName
+HAVING SUM(oi.Quantity) >
+(
+    SELECT AVG(TotalQuantity)
+    FROM
+    (
+        SELECT 
+            ProductId,
+            SUM(Quantity) AS TotalQuantity
+        FROM OrderItem
+        GROUP BY ProductId
+    ) AS ProductQuantity
+);
+
+SELECT TOP 1
+    c.CustomerId,
+    c.CustomerName,
+    SUM(oi.Quantity * oi.UnitPrice) AS TotalSpent
+FROM Customer c
+JOIN Orders o ON c.CustomerId = o.CustomerId
+JOIN OrderItem oi ON o.OrderId = oi.OrderId
+GROUP BY c.CustomerId, c.CustomerName
+ORDER BY TotalSpent DESC;
+
+SELECT TOP 1
+    p.ProductId,
+    p.ProductName,
+    SUM(oi.Quantity * oi.UnitPrice) AS TotalSalesAmount
+FROM Product p
+JOIN OrderItem oi ON p.ProductId = oi.ProductId
+GROUP BY p.ProductId, p.ProductName
+ORDER BY TotalSalesAmount DESC;
+
+SELECT TOP 1
+    s.SellerId,
+    s.SellerName,
+    SUM(oi.Quantity * oi.UnitPrice) AS TotalSalesAmount
+FROM Seller s
+JOIN Product p ON s.SellerId = p.SellerId
+JOIN OrderItem oi ON p.ProductId = oi.ProductId
+GROUP BY s.SellerId, s.SellerName
+ORDER BY TotalSalesAmount DESC;
+
+SELECT *
+FROM Product p
+WHERE Price > (
+    SELECT AVG(Price)
+    FROM Product
+    WHERE Category = p.Category)
+
+
+SELECT *
+FROM Product p
+WHERE Price < (
+    SELECT AVG(Price)
+    FROM Product
+    WHERE Category = p.Category)
+
+SELECT *
+FROM Seller s
+WHERE 2 < (
+    SELECT COUNT(*)
+    FROM Product p
+    WHERE p.SellerId = s.SellerId)
+
+SELECT *
+FROM Customer c
+WHERE 1 < (
+    SELECT COUNT(*)
+    FROM Orders o
+    WHERE o.CustomerId = c.CustomerId)
+
+SELECT 
+    o.OrderId,
+    o.CustomerId,
+    o.OrderDate,
+    o.OrderStatus,
+    o.PaymentMode,
+    o.DeliveryCity,
+    (
+        SELECT SUM(oi.Quantity * oi.UnitPrice)
+        FROM OrderItem oi
+        WHERE oi.OrderId = o.OrderId
+    ) AS OrderAmount
+FROM Orders o
+WHERE (
+    SELECT SUM(oi.Quantity * oi.UnitPrice)
+    FROM OrderItem oi
+    WHERE oi.OrderId = o.OrderId
+) >
+(
+    SELECT AVG(OrderAmount)
+    FROM
+    (
+        SELECT 
+            OrderId,
+            SUM(Quantity * UnitPrice) AS OrderAmount
+        FROM OrderItem
+        GROUP BY OrderId
+    ) AS OrderTotals)
+
+SELECT * FROM Product p
+WHERE StockQuantity > (SELECT AVG(StockQuantity) FROM Product WHERE Category = p.Category)
+
+SELECT * FROM Seller s WHERE 
+(SELECT AVG(p.Price) FROM Product p WHERE p.SellerId = s.SellerId) >(SELECT AVG(Price)FROM Product)
+
+
+SELECT *
+FROM Customer c
+WHERE EXISTS
+(
+    SELECT 1
+    FROM Orders o
+    WHERE o.CustomerId = c.CustomerId
+)
+
+
+SELECT *
+FROM Customer c
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM Orders o
+    WHERE o.CustomerId = c.CustomerId
+);
+
+
+SELECT *
+FROM Product p
+WHERE EXISTS
+(
+    SELECT 1
+    FROM OrderItem oi
+    WHERE oi.ProductId = p.ProductId
+)
+
+
+SELECT *
+FROM Product p
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM OrderItem oi
+    WHERE oi.ProductId = p.ProductId
+)
+
+
+SELECT *
+FROM Seller s
+WHERE EXISTS
+(
+    SELECT 1
+    FROM Product p
+    WHERE p.SellerId = s.SellerId
+)
+
+
+SELECT *
+FROM Seller s
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM Product p
+    WHERE p.SellerId = s.SellerId
+)
+
+SELECT *
+FROM Customer c
+WHERE EXISTS
+(
+    SELECT 1
+    FROM Orders o
+    JOIN OrderItem oi
+        ON o.OrderId = oi.OrderId
+    JOIN Product p
+        ON oi.ProductId = p.ProductId
+    WHERE o.CustomerId = c.CustomerId
+    AND p.Category = 'Mobile'
+)
+
+
+SELECT *
+FROM Customer c
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM Orders o
+    JOIN OrderItem oi
+        ON o.OrderId = oi.OrderId
+    JOIN Product p
+        ON oi.ProductId = p.ProductId
+    WHERE o.CustomerId = c.CustomerId
+    AND p.Category = 'Laptop'
+)
+
+
+CREATE OR ALTER PROCEDURE sp_DisplayAllCustomers
+AS
+BEGIN
+    SELECT * FROM Customer;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_DisplayAllProducts
+AS
+BEGIN
+    SELECT * FROM Product;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_DisplayAllSellers
+AS
+BEGIN
+    SELECT * FROM Seller;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_DisplayAllOrders
+AS
+BEGIN
+    SELECT * FROM Orders;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_DisplayAllOrderItems
+AS
+BEGIN
+    SELECT * FROM OrderItem;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_GetCustomerById
+    @CustomerId INT
+AS
+BEGIN
+    SELECT * FROM Customer
+    WHERE CustomerId = @CustomerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_GetProductById
+    @ProductId INT
+AS
+BEGIN
+    SELECT * FROM Product
+    WHERE ProductId = @ProductId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_GetSellerById
+    @SellerId INT
+AS
+BEGIN
+    SELECT * FROM Seller
+    WHERE SellerId = @SellerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_GetOrderById
+    @OrderId INT
+AS
+BEGIN
+    SELECT * FROM Orders
+    WHERE OrderId = @OrderId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_GetCustomersByCity
+    @City VARCHAR(50)
+AS
+BEGIN
+    SELECT * FROM Customer
+    WHERE City = @City;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_GetProductsByCategory
+    @Category VARCHAR(50)
+AS
+BEGIN
+    SELECT * FROM Product
+    WHERE Category = @Category;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_GetProductsBySellerId
+    @SellerId INT
+AS
+BEGIN
+    SELECT * FROM Product
+    WHERE SellerId = @SellerId;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE sp_GetOrdersByCustomerId
+    @CustomerId INT
+AS
+BEGIN
+    SELECT * FROM Orders
+    WHERE CustomerId = @CustomerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_GetOrderItemsByOrderId
+    @OrderId INT
+AS
+BEGIN
+    SELECT * FROM OrderItem
+    WHERE OrderId = @OrderId;
+END;
+GO
+
+-- 15
+CREATE OR ALTER PROCEDURE sp_GetProductsGreaterThanPrice
+    @Price DECIMAL(10,2)
+AS
+BEGIN
+    SELECT * FROM Product
+    WHERE Price > @Price;
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_InsertCustomer
+    @CustomerId INT,
+    @CustomerName VARCHAR(100),
+    @Email VARCHAR(100),
+    @MobileNo VARCHAR(15),
+    @City VARCHAR(50),
+    @Address VARCHAR(200),
+    @IsActive BIT,
+    @CreatedDate DATE
+AS
+BEGIN
+    INSERT INTO Customer
+    VALUES
+    (@CustomerId,@CustomerName,@Email,@MobileNo,@City,@Address,@IsActive,@CreatedDate);
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_InsertSeller
+    @SellerId INT,
+    @SellerName VARCHAR(100),
+    @Email VARCHAR(100),
+    @MobileNo VARCHAR(15),
+    @City VARCHAR(50),
+    @Rating DECIMAL(3,2),
+    @IsActive BIT
+AS
+BEGIN
+    INSERT INTO Seller
+    VALUES
+    (@SellerId,@SellerName,@Email,@MobileNo,@City,@Rating,@IsActive);
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_InsertProduct
+    @ProductId INT,
+    @ProductName VARCHAR(100),
+    @Category VARCHAR(50),
+    @Price DECIMAL(10,2),
+    @StockQuantity INT,
+    @SellerId INT,
+    @CreatedDate DATE
+AS
+BEGIN
+    INSERT INTO Product
+    VALUES
+    (@ProductId,@ProductName,@Category,@Price,@StockQuantity,@SellerId,@CreatedDate);
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_InsertOrder
+    @OrderId INT,
+    @CustomerId INT,
+    @OrderDate DATE,
+    @OrderStatus VARCHAR(50),
+    @PaymentMode VARCHAR(50),
+    @DeliveryCity VARCHAR(50)
+AS
+BEGIN
+    INSERT INTO Orders
+    VALUES
+    (@OrderId,@CustomerId,@OrderDate,@OrderStatus,@PaymentMode,@DeliveryCity);
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_InsertOrderItem
+    @OrderItemId INT,
+    @OrderId INT,
+    @ProductId INT,
+    @Quantity INT,
+    @UnitPrice DECIMAL(10,2)
+AS
+BEGIN
+    INSERT INTO OrderItem
+    VALUES
+    (@OrderItemId,@OrderId,@ProductId,@Quantity,@UnitPrice);
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_UpdateCustomerCity
+    @CustomerId INT,
+    @City VARCHAR(50)
+AS
+BEGIN
+    UPDATE Customer
+    SET City = @City
+    WHERE CustomerId = @CustomerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_UpdateCustomerMobile
+    @CustomerId INT,
+    @MobileNo VARCHAR(15)
+AS
+BEGIN
+    UPDATE Customer
+    SET MobileNo = @MobileNo
+    WHERE CustomerId = @CustomerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_UpdateProductPrice
+    @ProductId INT,
+    @Price DECIMAL(10,2)
+AS
+BEGIN
+    UPDATE Product
+    SET Price = @Price
+    WHERE ProductId = @ProductId;
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_UpdateProductStock
+    @ProductId INT,
+    @StockQuantity INT
+AS
+BEGIN
+    UPDATE Product
+    SET StockQuantity = @StockQuantity
+    WHERE ProductId = @ProductId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_UpdateOrderStatus
+    @OrderId INT,
+    @OrderStatus VARCHAR(50)
+AS
+BEGIN
+    UPDATE Orders
+    SET OrderStatus = @OrderStatus
+    WHERE OrderId = @OrderId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_UpdateSellerRating
+    @SellerId INT,
+    @Rating DECIMAL(3,2)
+AS
+BEGIN
+    UPDATE Seller
+    SET Rating = @Rating
+    WHERE SellerId = @SellerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_UpdateCustomerStatus
+    @CustomerId INT,
+    @IsActive BIT
+AS
+BEGIN
+    UPDATE Customer
+    SET IsActive = @IsActive
+    WHERE CustomerId = @CustomerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_UpdateSellerStatus
+    @SellerId INT,
+    @IsActive BIT
+AS
+BEGIN
+    UPDATE Seller
+    SET IsActive = @IsActive
+    WHERE SellerId = @SellerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_DeleteCustomer
+    @CustomerId INT
+AS
+BEGIN
+    DELETE FROM Customer
+    WHERE CustomerId = @CustomerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_DeleteSeller
+    @SellerId INT
+AS
+BEGIN
+    DELETE FROM Seller
+    WHERE SellerId = @SellerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_DeleteProduct
+    @ProductId INT
+AS
+BEGIN
+    DELETE FROM Product
+    WHERE ProductId = @ProductId;
+END;
+GO
+
+
+
+
+CREATE OR ALTER PROCEDURE sp_DeleteOrder
+    @OrderId INT
+AS
+BEGIN
+    DELETE FROM Orders
+    WHERE OrderId = @OrderId;
+END;
+GO
+
+
+
+
+CREATE OR ALTER PROCEDURE sp_DeleteOrderItem
+    @OrderItemId INT
+AS
+BEGIN
+    DELETE FROM OrderItem
+    WHERE OrderItemId = @OrderItemId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_CustomerWiseOrderDetails
+AS
+BEGIN
+    SELECT 
+        c.CustomerId,
+        c.CustomerName,
+        o.OrderId,
+        o.OrderDate,
+        o.OrderStatus,
+        o.PaymentMode,
+        o.DeliveryCity
+    FROM Customer c
+    INNER JOIN Orders o ON c.CustomerId = o.CustomerId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_SellerWiseProductDetails
+AS
+BEGIN
+    SELECT
+        s.SellerId,
+        s.SellerName,
+        p.ProductId,
+        p.ProductName,
+        p.Category,
+        p.Price,
+        p.StockQuantity
+    FROM Seller s
+    INNER JOIN Product p ON s.SellerId = p.SellerId;
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_OrderWiseProductDetails
+AS
+BEGIN
+    SELECT
+        o.OrderId,
+        o.OrderDate,
+        p.ProductId,
+        p.ProductName,
+        oi.Quantity,
+        oi.UnitPrice
+    FROM Orders o
+    INNER JOIN OrderItem oi ON o.OrderId = oi.OrderId
+    INNER JOIN Product p ON oi.ProductId = p.ProductId;
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_CompleteOrderReport
+AS
+BEGIN
+    SELECT
+        c.CustomerName,
+        o.OrderId,
+        p.ProductName,
+        s.SellerName,
+        oi.Quantity,
+        oi.UnitPrice,
+        (oi.Quantity * oi.UnitPrice) AS TotalAmount
+    FROM Customer c
+    INNER JOIN Orders o ON c.CustomerId = o.CustomerId
+    INNER JOIN OrderItem oi ON o.OrderId = oi.OrderId
+    INNER JOIN Product p ON oi.ProductId = p.ProductId
+    INNER JOIN Seller s ON p.SellerId = s.SellerId;
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_CustomerWiseTotalOrderAmount
+AS
+BEGIN
+    SELECT
+        c.CustomerId,
+        c.CustomerName,
+        SUM(oi.Quantity * oi.UnitPrice) AS TotalOrderAmount
+    FROM Customer c
+    INNER JOIN Orders o ON c.CustomerId = o.CustomerId
+    INNER JOIN OrderItem oi ON o.OrderId = oi.OrderId
+    GROUP BY c.CustomerId, c.CustomerName;
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_SellerWiseTotalSalesAmount
+AS
+BEGIN
+    SELECT
+        s.SellerId,
+        s.SellerName,
+        SUM(oi.Quantity * oi.UnitPrice) AS TotalSalesAmount
+    FROM Seller s
+    INNER JOIN Product p ON s.SellerId = p.SellerId
+    INNER JOIN OrderItem oi ON p.ProductId = oi.ProductId
+    GROUP BY s.SellerId, s.SellerName;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_ProductWiseTotalSalesQuantity
+AS
+BEGIN
+    SELECT
+        p.ProductId,
+        p.ProductName,
+        SUM(oi.Quantity) AS TotalSalesQuantity
+    FROM Product p
+    INNER JOIN OrderItem oi ON p.ProductId = oi.ProductId
+    GROUP BY p.ProductId, p.ProductName;
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_GetTotalCustomers
+    @TotalCustomers INT OUTPUT
+AS
+BEGIN
+    SELECT @TotalCustomers = COUNT(*)
+    FROM Customer;
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_GetTotalProducts
+    @TotalProducts INT OUTPUT
+AS
+BEGIN
+    SELECT @TotalProducts = COUNT(*)
+    FROM Product;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_GetTotalOrders
+    @TotalOrders INT OUTPUT
+AS
+BEGIN
+    SELECT @TotalOrders = COUNT(*)
+    FROM Orders;
+END;
+GO
+
+
+
+CREATE OR ALTER PROCEDURE sp_GetProductTotalSales
+    @ProductId INT,
+    @TotalSales DECIMAL(10,2) OUTPUT
+AS
+BEGIN
+    SELECT @TotalSales = ISNULL(SUM(Quantity * UnitPrice), 0)
+    FROM OrderItem
+    WHERE ProductId = @ProductId;
+END;
+GO
+
+
+CREATE OR ALTER PROCEDURE sp_GetCustomerTotalPurchase
+    @CustomerId INT,
+    @TotalPurchase DECIMAL(10,2) OUTPUT
+AS
+BEGIN
+    SELECT @TotalPurchase = ISNULL(SUM(oi.Quantity * oi.UnitPrice), 0)
+    FROM Orders o
+    INNER JOIN OrderItem oi ON o.OrderId = oi.OrderId
+    WHERE o.CustomerId = @CustomerId;
+END;
+GO
