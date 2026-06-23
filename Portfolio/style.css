@@ -1,0 +1,78 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    color: black;
+    margin: 20px;
+}
+
+nav {
+    background-color: lightgray;
+    padding: 10px;
+}
+
+.nav-logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style-type: none;
+    padding: 0;
+}
+
+.nav-links li {
+    display: inline;
+    margin-right: 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: navy;
+}
+
+h1, h2 {
+    color: navy;
+}
+
+.highlight {
+    color: darkblue;
+}
+
+section {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.skill-group,
+.project-card,
+.experience-item,
+.education-item,
+.cert-item,
+.contact-item {
+    border: 1px solid gray;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.btn {
+    text-decoration: none;
+    border: 1px solid black;
+    padding: 5px 10px;
+    margin-right: 10px;
+    color: black;
+}
+
+.btn:hover {
+    background-color: lightgray;
+}
+
+ul {
+    margin-left: 20px;
+}
+
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 10px;
+    background-color: lightgray;
+}
