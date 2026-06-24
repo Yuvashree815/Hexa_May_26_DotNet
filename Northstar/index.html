@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Northstar Astronomy Club</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <div class="container nav-container">
+            <div class="logo">🔭 Northstar</div>
+
+            <nav>
+                <ul>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#schedule">Schedule</a></li>
+                    <li><a href="#join">Join</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <p class="eyebrow">CEDAR HILL · EVERY CLEAR FRIDAY</p>
+
+            <h1>Look up with us.</h1>
+
+            <p class="hero-text">
+                A community of stargazers meeting every clear Friday night.
+            </p>
+
+            <a href="#join" class="btn">Join the club</a>
+        </div>
+    </section>
+
+    <main>
+
+        <section id="events" class="section">
+            <div class="container">
+                <h2>Upcoming events</h2>
+
+                <div class="events-grid">
+
+                    <article class="card">
+                        <span class="badge">New</span>
+                        <h3>Jupiter night</h3>
+                        <p class="date">Apr 12</p>
+                        <p>The gas giant and its four Galilean moons.</p>
+                    </article>
+
+                    <article class="card">
+                        <h3>Lunar close-up</h3>
+                        <p class="date">Apr 26</p>
+                        <p>Craters along the terminator.</p>
+                    </article>
+
+                    <article class="card">
+                        <h3>Saturn's rings</h3>
+                        <p class="date">May 10</p>
+                        <p>The biggest “wow” for newcomers.</p>
+                    </article>
+
+                    <article class="card">
+                        <h3>Deep Sky Tour</h3>
+                        <p class="date">May 24</p>
+                        <p>Explore clusters, nebulae and galaxies.</p>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="schedule" class="section">
+            <div class="container">
+                <h2>Spring schedule</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>DATE</th>
+                            <th>LOCATION</th>
+                            <th>TARGET</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>Apr 12</td>
+                            <td>Cedar Hill</td>
+                            <td>Jupiter</td>
+                        </tr>
+
+                        <tr>
+                            <td>Apr 26</td>
+                            <td>Cedar Hill</td>
+                            <td>The Moon</td>
+                        </tr>
+
+                        <tr>
+                            <td>May 10</td>
+                            <td>Dunes Park</td>
+                            <td>Saturn</td>
+                        </tr>
+
+                        <tr>
+                            <td>May 24</td>
+                            <td>Cedar Hill</td>
+                            <td>Globular Clusters</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="join" class="section">
+            <div class="container form-container">
+                <h2>Join the club</h2>
+
+                <form>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience">Experience</label>
+                        <select id="experience" required>
+                            <option value="">Select</option>
+                            <option>Beginner</option>
+                            <option>Intermediate</option>
+                            <option>Advanced</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn">
+                        Join the club
+                    </button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Northstar Astronomy Club · Cedar Hill · hi@northstar.club</p>
+            <p>© 2026 Northstar · Built with HTML & CSS.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
