@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departures Board</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="header">
+
+        <div>
+            
+            <p> Live Sky Harbor Intl - Terminal 4</p>
+            <h1>DEPARTURES</h1>
+        </div>
+
+        <div>
+            <div id="clock" class="clock"></div>
+            <p>LOCAL TIME · GMT-7</p>
+        </div>
+
+    </div>
+
+    
+    
+    <div class="board" id="board"></div>
+    
+    <div class="controls">
+        <button id="addBtn">+ Add Departure</button>
+        <button id="resetBtn">Reset Board</button>
+    </div>
+    <div class="info-bar">
+    <div id="counter" class="counter"></div>
+    <div id="stats" class="stats"></div>
+    </div>
+    
+
+    <div class="legend">
+        <span class="green"></span> ON TIME
+        <span class="yellow"></span> BOARDING
+        <span class="orange"></span> DELAYED
+        <span class="red"></span> GATE CLOSED
+        <span class="gray"></span> DEPARTED
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
